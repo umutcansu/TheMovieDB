@@ -1,9 +1,12 @@
 package com.example.mymovie.ui
 
 
+import android.util.Log
 import androidx.lifecycle.ViewModelProvider
+import com.example.mymovie.adapter.NowPlayingSliderAdapter
 import com.example.mymovie.base.core.BaseFragment
 import com.example.mymovie.databinding.FragmentMainBinding
+import com.example.mymovie.model.NowPlayingModel
 import com.example.mymovie.vm.MainFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -26,5 +29,18 @@ class MainFragment :
 
 
     private fun initObservable() {
+        mViewModel.apply {
+            upComing.observe(viewLifecycleOwner) {
+                Log.e("","")
+            }
+            nowPlaying.observe(viewLifecycleOwner) {
+                if(it != null)
+                    initSlider(it)
+            }
+        }
+    }
+
+    private fun initSlider(result: NowPlayingModel){
+        mBinding.imageSlider.setSliderAdapter(NowPlayingSliderAdapter(result.results.filter { it.poster_path.isNotEmpty()}.toList()))
     }
 }

@@ -8,6 +8,8 @@ import java.util.concurrent.TimeUnit
 
 object RetrofitHelper
 {
+    const val PICTURE_BASE_URL =  "https://image.tmdb.org/t/p/w500/"
+
     private var retrofit : Retrofit? = null
 
     private var  service : RetrofitService? = null

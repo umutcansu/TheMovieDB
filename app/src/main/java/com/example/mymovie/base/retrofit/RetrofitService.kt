@@ -1,9 +1,14 @@
 package com.example.mymovie.base.retrofit
 
+import com.example.mymovie.model.NowPlayingModel
+import com.example.mymovie.model.UpComingModel
 import retrofit2.Call
 import retrofit2.http.GET
 
 interface RetrofitService {
-    //@GET("e7211664-cbb6-4357-9c9d-f12bf8bab2e2")
-    //fun getSpaceShuttle(): Call<List<SpaceStationItem>>
+    @GET("movie/now_playing")
+    fun getNowPlaying(): Call<NowPlayingModel>
+
+    @GET("movie/upcoming")
+    fun getUpcoming():Call<UpComingModel>
 }
