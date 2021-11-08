@@ -22,7 +22,8 @@ class MainFragmentViewModel @Inject constructor(private val repository: BaseRepo
     BaseViewModel(repository) {
 
     val nowPlaying: MutableLiveData<NowPlayingModel> = MutableLiveData()
-    val upComing: MutableLiveData<UpComingModel> = MutableLiveData()
+    val upComingClick: MutableLiveData<UpComingModel.Result> = MutableLiveData()
+
     private val PAGE_SIZE = 20
 
 
@@ -58,7 +59,7 @@ class MainFragmentViewModel @Inject constructor(private val repository: BaseRepo
     }
 
     fun clickItem(model:UpComingModel.Result){
-
+        upComingClick.value = model
     }
 
 }
