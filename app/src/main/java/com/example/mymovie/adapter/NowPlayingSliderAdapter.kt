@@ -14,6 +14,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.example.mymovie.base.retrofit.RetrofitHelper
 import com.example.mymovie.databinding.ImageSliderLayoutItemBinding
+import com.example.mymovie.util.GlideUtil
 
 class NowPlayingSliderAdapter(
     private val mSliderItems: List<NowPlayingModel.Result> = ArrayList()
@@ -37,38 +38,9 @@ class NowPlayingSliderAdapter(
 
     override fun onBindViewHolder(viewHolder: SliderAdapterVH, position: Int) {
         val sliderItem: NowPlayingModel.Result = mSliderItems[position]
-        viewHolder.binding.data = sliderItem
-
-        Glide.with(viewHolder.itemView.rootView)
-            .addDefaultRequestListener(object : RequestListener<Any> {
-                override fun onLoadFailed(
-                    e: GlideException?,
-                    model: Any?,
-                    target: Target<Any>?,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    viewHolder.binding.ivGifContainer.visibility = View.GONE
-                    return false
-                }
-
-                override fun onResourceReady(
-                    resource: Any?,
-                    model: Any?,
-                    target: Target<Any>?,
-                    dataSource: DataSource?,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    viewHolder.binding.ivGifContainer.visibility = View.GONE
-                    return false
-                }
-
-            })
-            .load(getPathUrl(sliderItem))
-            .fitCenter()
-            .into(viewHolder.binding.ivAutoImageSlider)
-    }
-
-    private fun getPathUrl(sliderItem: NowPlayingModel.Result): String {
-        return "${RetrofitHelper.PICTURE_BASE_URL}${sliderItem.poster_path}"
+        viewHolder.binding.apply {
+            data = sliderItem
+            GlideUtil.loadPoster(ivAutoImageSlider,ivGifContainer,sliderItem.imagePath)
+        }
     }
 }

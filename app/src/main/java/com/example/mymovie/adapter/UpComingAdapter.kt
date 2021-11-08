@@ -16,46 +16,20 @@ import com.example.mymovie.R
 import com.example.mymovie.base.retrofit.RetrofitHelper
 import com.example.mymovie.databinding.UpcommingLayoutItemBinding
 import com.example.mymovie.model.UpComingModel
+import com.example.mymovie.util.GlideUtil
 import com.example.mymovie.vm.MainFragmentViewModel
 
 class UpComingAdapter(val viewModel: MainFragmentViewModel): PagingDataAdapter<UpComingModel.Result, UpComingAdapter.MovieViewHolder>(MovieDiffCallback) {
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
         val movie = getItem(position)!!
-        holder.binding.data = movie
-        holder.binding.vm = viewModel
-        Glide.with(holder.itemView.rootView)
-            .addDefaultRequestListener(object : RequestListener<Any> {
-                override fun onLoadFailed(
-                    e: GlideException?,
-                    model: Any?,
-                    target: Target<Any>?,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    holder.binding.pbLoading.visibility = View.GONE
-                    return false
-                }
-
-                override fun onResourceReady(
-                    resource: Any?,
-                    model: Any?,
-                    target: Target<Any>?,
-                    dataSource: DataSource?,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    holder.binding.pbLoading.visibility = View.GONE
-                    return false
-                }
-
-            })
-            .load(getPathUrl(movie))
-            .fitCenter()
-            .into(holder.binding.ivPoster)
+        holder.apply {
+            binding.data = movie
+            binding.vm = viewModel
+            GlideUtil.loadPoster(binding.ivPoster,binding.pbLoading,movie.imagePath)
+        }
     }
 
-    private fun getPathUrl(sliderItem: UpComingModel.Result): String {
-        return "${RetrofitHelper.PICTURE_BASE_URL}${sliderItem.poster_path}"
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         val view = DataBindingUtil.inflate<UpcommingLayoutItemBinding>(

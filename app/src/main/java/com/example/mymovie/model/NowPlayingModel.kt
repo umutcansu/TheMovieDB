@@ -1,5 +1,7 @@
 package com.example.mymovie.model
 
+import com.example.mymovie.base.retrofit.RetrofitHelper
+
 data class NowPlayingModel(
     var dates: Dates = Dates(),
     var page: Int = 0,
@@ -26,6 +28,10 @@ data class NowPlayingModel(
         var title: String = "",
         var video: Boolean = false,
         var vote_average: Double = 0.0,
-        var vote_count: Int = 0
-    )
+        var vote_count: Int = 0,
+    ){
+        val imagePath:String
+            get() = "${RetrofitHelper.PICTURE_BASE_URL}${poster_path}"
+
+    }
 }
