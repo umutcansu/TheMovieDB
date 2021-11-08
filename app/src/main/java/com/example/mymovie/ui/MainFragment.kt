@@ -5,12 +5,14 @@ import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import com.example.mymovie.adapter.NowPlayingSliderAdapter
 import com.example.mymovie.adapter.UpComingAdapter
 import com.example.mymovie.base.core.BaseFragment
 import com.example.mymovie.databinding.FragmentMainBinding
 import com.example.mymovie.model.NowPlayingModel
+import com.example.mymovie.model.UpComingModel
 import com.example.mymovie.vm.MainFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -39,8 +41,10 @@ class MainFragment :
 
     private fun initObservable() {
         mViewModel.apply {
-            upComing.observe(viewLifecycleOwner) {
-                Log.e("", "")
+            upComingClick.observe(viewLifecycleOwner) {
+                it?.let {
+                    openDetails(it)
+                }
             }
             nowPlaying.observe(viewLifecycleOwner) {
                 if (it != null)
@@ -48,19 +52,6 @@ class MainFragment :
             }
         }
 
-        adapter.addLoadStateListener { combinedLoadStates ->
-            when (val loadState = combinedLoadStates.source.refresh) {
-                is LoadState.NotLoading -> {
-                    isLoadingUpComing(true)
-                }
-                is LoadState.Loading -> {
-                    isLoadingUpComing(false)
-                }
-                is LoadState.Error -> {
-                    Log.e(::MainFragment.javaClass.name, loadState.error.localizedMessage ?: "")
-                }
-            }
-        }
         lifecycleScope.launch {
             mViewModel.getUpComing().collectLatest {
                 adapter.submitData(it)
@@ -96,6 +87,25 @@ class MainFragment :
 
     private fun initUpComingAdapter() {
         adapter = UpComingAdapter(mViewModel)
+        adapter.addLoadStateListener { combinedLoadStates ->
+            when (val loadState = combinedLoadStates.source.refresh) {
+                is LoadState.NotLoading -> {
+                    isLoadingUpComing(true)
+                }
+                is LoadState.Loading -> {
+                    isLoadingUpComing(false)
+                }
+                is LoadState.Error -> {
+                    Log.e(::MainFragment.javaClass.name, loadState.error.localizedMessage ?: "")
+                }
+            }
+        }
         mBinding.rvUpcoming.adapter = adapter
     }
+
+    private fun openDetails(model: UpComingModel.Result) {
+        val direction = MainFragmentDirections.actionMainFragmentToDetailFragment(model)
+        findNavController().navigate(direction)
+    }
+
 }
